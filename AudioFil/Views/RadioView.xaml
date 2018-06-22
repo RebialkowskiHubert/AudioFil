@@ -61,11 +61,13 @@
                 <WrapPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button 
                     Style="{StaticResource Klawisze}"
-                    Content="{StaticResource FontPlus}"/>
+                    Content="{StaticResource FontPlus}"
+                    Command="{Binding AddCommand}"/>
 
                     <Button 
                     Style="{StaticResource Klawisze}"
-                    Content="{StaticResource FontPrev}"/>
+                    Content="{StaticResource FontPrev}"
+                    Command="{Binding PreviousCommand}"/>
                     
                     <Button 
                     Style="{StaticResource Klawisze}"
@@ -74,7 +76,8 @@
 
                     <Button 
                     Style="{StaticResource Klawisze}"
-                    Content="{StaticResource FontNext}"/>
+                    Content="{StaticResource FontNext}"
+                    Command="{Binding NextCommand}"/>
                     
                     <Button 
                     Style="{StaticResource Klawisze}"

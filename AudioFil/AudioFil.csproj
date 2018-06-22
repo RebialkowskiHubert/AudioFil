@@ -99,6 +99,7 @@
     <Compile Include="Helpers\PropChanged.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Helpers\ViewModelLocator.cs" />
+    <Compile Include="ViewModel\AddStationViewModel.cs" />
     <Compile Include="ViewModel\XMLHandling.cs" />
     <Compile Include="Views\AddStationView.xaml.cs">
       <DependentUpon>AddStationView.xaml</DependentUpon>
@@ -183,13 +184,6 @@
     <Resource Include="img\song.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="db.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="db_log.ldf">
-      <DependentUpon>db.mdf</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Playlista.xml" />
     <Resource Include="icon.ico" />
     <Resource Include="img\background.jpg" />

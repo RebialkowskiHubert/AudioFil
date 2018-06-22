@@ -1,7 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 using Tulpep.NotificationWindow;
 using WMPLib;
 
@@ -12,6 +10,8 @@ namespace AudioFil
         private WindowsMediaPlayer wmp;
 
         private ObservableCollection<Radio> radios;
+
+        private XMLHandling xml;
 
         public ObservableCollection<Radio> Radios
         {
@@ -79,18 +79,42 @@ namespace AudioFil
         }
 
 
+        public RelayCommand AddCommand { get; set; }
         public RelayCommand PlayCommand { get; set; }
         public RelayCommand StopCommand { get; set; }
+        public RelayCommand NextCommand { get; set; }
+        public RelayCommand PreviousCommand { get; set; }
 
         public RadioViewModel()
         {
+            AddCommand = new RelayCommand(Add);
             PlayCommand = new RelayCommand(Play);
             StopCommand = new RelayCommand(Stop);
+            NextCommand = new RelayCommand(Next);
+            PreviousCommand = new RelayCommand(Previous);
 
-            XMLHandling xml = new XMLHandling();
-            radios = xml.LoadRadios("Playlista.xml", radios);
+            xml = new XMLHandling();
+            Radios = xml.LoadRadios(Radios);
 
             wmp = new WindowsMediaPlayer();
+
+            wmp.StatusChange += CheckStatus;
+        }
+
+        private void CheckStatus()
+        {
+            Description = wmp.status;
+        }
+
+        private void Add()
+        {
+            AddStationView av = new AddStationView();
+            av.Show();
+
+            av.Closed += (ss, ee) =>
+            {
+                Radios = xml.LoadRadios(Radios);
+            };
         }
 
         private void Play()
@@ -107,28 +131,43 @@ namespace AudioFil
             {
                 Title = ee.NewSong.Artist + " - " + ee.NewSong.Title;
 
-                PopupNotifier popup = new PopupNotifier();
-                popup.Image = Properties.Resources.info;
-                popup.TitleText = SelectedRadio.NazwaStacja;
-                popup.ContentText = Title;
-                popup.Popup();
+                App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    PopupNotifier popup = new PopupNotifier
+                    {
+                        Image = Properties.Resources.info,
+                        TitleText = SelectedRadio.NazwaStacja,
+                        ContentText = Title
+                    };
+                    popup.Popup();
+                });
             };
-
-            CheckStatus();
-        }
-
-        private void CheckStatus()
-        {
-            for (int i = 0; i < 15; i++)
-            {
-                Description = wmp.status;
-                Task.Delay(1000);
-            }
         }
 
         private void Stop()
         {
             wmp.controls.stop();
+
+            SelectedRadio.Stop();
+            Title = "";
+        }
+
+        private void Next()
+        {
+            int index = Radios.IndexOf(SelectedRadio) + 1;
+
+            if(index < Radios.Count)
+                SelectedRadio = Radios[index];
+        }
+
+        private void Previous()
+        {
+            int index = Radios.IndexOf(SelectedRadio) - 1;
+
+            if (index >= 0)
+                SelectedRadio = Radios[index];
+            else
+                SelectedRadio = Radios[Radios.Count - 1];
         }
     }
 }

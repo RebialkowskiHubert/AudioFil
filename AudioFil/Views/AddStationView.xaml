@@ -1,18 +1,45 @@
 ﻿<Window x:Class="AudioFil.AddStationView"
+        x:Name="AddWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AudioFil"
+        local:ViewModelLocator.AutoHookedUpViewModel="True"
         mc:Ignorable="d"
-        Title="Dodawanie" Height="300" Width="300">
-    <Grid>
-        <Button Content="Anuluj" HorizontalAlignment="Left" Margin="106,180,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="110,60,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="170"/>
-        <Label Content="Nazwa stacji:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Height="23" Margin="110,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="170"/>
-        <Label Content="Adres URL:" HorizontalAlignment="Left" Margin="10,57,0,0" VerticalAlignment="Top"/>
-        <Button Content="OK" HorizontalAlignment="Left" Margin="106,146,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+        Title="Dodawanie" Height="250" Width="300">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10">
+            <TextBlock Text="Nazwa Stacji:" Width="100"/>
+            <TextBox Text="{Binding StationName, Mode=TwoWay}" Width="150"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="10">
+            <TextBlock Text="Adres URL Stacji:" Width="100"/>
+            <TextBox Text="{Binding StationUrl, Mode=TwoWay}" Width="150"/>
+        </StackPanel>
+
+        <Button
+            Grid.Row="2"
+            Content="OK"
+            Margin="10"
+            Width="100"
+            Command="{Binding SaveCommand}"
+            CommandParameter="{Binding ElementName=AddWindow}"/>
+
+        <Button
+            Grid.Row="3"
+            Content="Anuluj"
+            Margin="10"
+            Width="100"
+            Command="{Binding CloseCommand}"
+            CommandParameter="{Binding ElementName=AddWindow}"/>
     </Grid>
 </Window>
