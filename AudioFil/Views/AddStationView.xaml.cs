@@ -17,9 +17,9 @@ namespace AudioFil
     /// <summary>
     /// Logika interakcji dla klasy Dodawanie.xaml
     /// </summary>
-    public partial class Dodawanie : Window
+    public partial class AddStationView : Window
     {
-        public Dodawanie()
+        public AddStationView()
         {
             InitializeComponent();
         }
@@ -31,8 +31,8 @@ namespace AudioFil
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            LogikaRadio lr = new LogikaRadio();
-            lr.DodajRadio(textBox1.Text, textBox2.Text);
+            RadioViewModel lr = new RadioViewModel();
+            //lr.DodajRadio(textBox1.Text, textBox2.Text);
 
             MessageBox.Show("Stacja została dodana");
             this.Close();

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Windows.Media;
-using WMPLib;
+﻿using WMPLib;
 
 namespace AudioFil
 {
-    public class Odtwarzacz
+    public class OdtwarzaczViewModel
     {
         WindowsMediaPlayer player = new WindowsMediaPlayer();
 

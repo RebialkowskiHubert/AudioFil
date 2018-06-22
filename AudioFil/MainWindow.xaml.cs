@@ -10,16 +10,16 @@ namespace AudioFil
 {
     public partial class MainWindow : Window
     {
-        LogikaRadio lr;
+        //LogikaRadio lr;
 
         public MainWindow()
         {
             InitializeComponent();
-            lr = new LogikaRadio();
-            LadujStacje();
+           // lr = new LogikaRadio();
+           // LadujStacje();
         }
 
-        private async void LadujStacje()
+        /*private async void LadujStacje()
         {
             await lr.PolaczBaza();
             lstItems.ItemsSource = lr.GetRadia().DefaultView;
@@ -60,7 +60,7 @@ namespace AudioFil
             Dodawanie okno = new Dodawanie();
             okno.ShowDialog();
             LadujStacje();
-        }
+        }*/
 
         private void Play(string url, string stacja)
         {
@@ -71,7 +71,7 @@ namespace AudioFil
                 Dispatcher.InvokeAsync(() =>
                 {
                     string message = ee.NewSong.Artist + " - " + ee.NewSong.Title;
-                    tbTytul.Text = message;
+                    //tbTytul.Text = message;
 
                     PopupNotifier popup = new PopupNotifier();
                     popup.Image = Properties.Resources.info;
@@ -82,9 +82,9 @@ namespace AudioFil
             };
         }
 
-        private void Window_Closed(object sender, EventArgs e)
+        /*private void Window_Closed(object sender, EventArgs e)
         {
             lr.Zamknij();
-        }
+        }*/
     }
 }

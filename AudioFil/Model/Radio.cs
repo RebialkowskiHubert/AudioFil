@@ -97,6 +97,11 @@ namespace AudioFil
             runningTask = Task.Run(() => GetHttpStream());
         }
 
+        public void Stop()
+        {
+            Running = false;
+        }
+
         void GetHttpStream()
         {
             do
@@ -168,7 +173,6 @@ namespace AudioFil
                                         streamPosition = Math.Min(readBytes - bufferPosition, metaInt);
                                         ProcessStreamData(buffer, ref bufferPosition, streamPosition);
                                         break;
-                                        Running = false;
                                     }
                                 }
                             }
@@ -193,6 +197,11 @@ namespace AudioFil
                 OnStreamUpdate(this, new StreamUpdateEventArgs(data));
             }
             offset += length;
+        }
+
+        public static implicit operator string(Radio v)
+        {
+            throw new NotImplementedException();
         }
     }
 
