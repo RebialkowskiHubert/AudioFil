@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 using Tulpep.NotificationWindow;
 using WMPLib;
 
@@ -41,6 +42,7 @@ namespace AudioFil
                     selectedRadio = value;
                     RaisePropertyChanged("SelectedRadio");
                     Play();
+                    DeleteCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -79,19 +81,23 @@ namespace AudioFil
         }
 
 
-        public RelayCommand AddCommand { get; set; }
+        public RelayCommand<Radio> AddCommand { get; set; }
         public RelayCommand PlayCommand { get; set; }
         public RelayCommand StopCommand { get; set; }
         public RelayCommand NextCommand { get; set; }
         public RelayCommand PreviousCommand { get; set; }
+        public RelayCommand UpdateCommand { get; set; }
+        public RelayCommand DeleteCommand { get; set; }
 
         public RadioViewModel()
         {
-            AddCommand = new RelayCommand(Add);
+            AddCommand = new RelayCommand<Radio>(Add);
             PlayCommand = new RelayCommand(Play);
             StopCommand = new RelayCommand(Stop);
             NextCommand = new RelayCommand(Next);
             PreviousCommand = new RelayCommand(Previous);
+            UpdateCommand = new RelayCommand(Update, IsSelected);
+            DeleteCommand = new RelayCommand(Delete, IsSelected);
 
             xml = new XMLHandling();
             Radios = xml.LoadRadios(Radios);
@@ -106,9 +112,24 @@ namespace AudioFil
             Description = wmp.status;
         }
 
-        private void Add()
+        private bool IsSelected()
+        {
+            return SelectedRadio != null;
+        }
+
+        private void Add(Radio r = null)
         {
             AddStationView av = new AddStationView();
+
+            if (r != null)
+            {
+                AddStationViewModel avm = new AddStationViewModel();
+                avm.SetMode(true, SelectedRadio);
+                avm.StationName = SelectedRadio.NazwaStacja;
+                avm.StationUrl = SelectedRadio.Url;
+                av.DataContext = avm;
+            }
+                
             av.Show();
 
             av.Closed += (ss, ee) =>
@@ -119,6 +140,9 @@ namespace AudioFil
 
         private void Play()
         {
+            if (SelectedRadio == null)
+                return;
+
             wmp.controls.stop();
             if(oldRadio != null)
                 oldRadio.Stop();
@@ -168,6 +192,21 @@ namespace AudioFil
                 SelectedRadio = Radios[index];
             else
                 SelectedRadio = Radios[Radios.Count - 1];
+        }
+
+        private void Update()
+        {
+            Add(SelectedRadio);
+        }
+
+        private void Delete()
+        {
+            MessageBoxResult result = MessageBox.Show($"Czy na pewno chcesz usunąć {SelectedRadio.NazwaStacja}?", "Usuń", MessageBoxButton.YesNo);
+            if(result == MessageBoxResult.Yes)
+            {
+                xml.DeleteRadio(SelectedRadio);
+                Radios.Remove(Radios.Where(r => r == SelectedRadio).FirstOrDefault());
+            }
         }
     }
 }

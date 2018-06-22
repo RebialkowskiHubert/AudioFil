@@ -7,7 +7,12 @@
         xmlns:local="clr-namespace:AudioFil"
         local:ViewModelLocator.AutoHookedUpViewModel="True"
         mc:Ignorable="d"
-        Title="Dodawanie" Height="250" Width="300">
+        Title="Stacja" Height="250" Width="300">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="Converter"/>
+    </Window.Resources>
+    
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -28,17 +33,30 @@
 
         <Button
             Grid.Row="2"
-            Content="OK"
+            Content="Dodaj"
             Margin="10"
             Width="100"
+            IsDefault="True"
             Command="{Binding SaveCommand}"
-            CommandParameter="{Binding ElementName=AddWindow}"/>
+            CommandParameter="{Binding ElementName=AddWindow}"
+            Visibility="{Binding Add, Converter={StaticResource Converter}}"/>
+
+        <Button
+            Grid.Row="2"
+            Content="Zapisz"
+            Margin="10"
+            Width="100"
+            IsDefault="True"
+            Command="{Binding UpdateCommand}"
+            CommandParameter="{Binding ElementName=AddWindow}"
+            Visibility="{Binding Edit, Converter={StaticResource Converter}}"/>
 
         <Button
             Grid.Row="3"
             Content="Anuluj"
             Margin="10"
             Width="100"
+            IsCancel="True"
             Command="{Binding CloseCommand}"
             CommandParameter="{Binding ElementName=AddWindow}"/>
     </Grid>

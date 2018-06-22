@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace AudioFil
 {
@@ -59,6 +61,46 @@ namespace AudioFil
                 root.AppendChild(stacja);
 
                 doc.Save(path);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void UpdateRadio(Radio old, Radio newr)
+        {
+            doc = new XmlDocument();
+
+            try
+            {
+                doc.Load(path);
+
+                foreach(XmlNode node in doc.GetElementsByTagName("Stacja"))
+                {
+                    if (node.FirstChild.InnerText.Equals(old.IdStacja.ToString()))
+                    {
+                        node.FirstChild.NextSibling.InnerText = newr.NazwaStacja;
+                        node.LastChild.InnerText = newr.Url;
+                        break;
+                    }
+                }
+
+                doc.Save(path);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public void DeleteRadio(Radio r)
+        {
+            try
+            {
+                XDocument xDoc = XDocument.Load(path);
+                xDoc.Root.Elements("Stacja").Elements("Id").Where(stat => stat.Value == r.IdStacja.ToString()).Select(stat => stat.Parent).Remove();
+                xDoc.Save(path);
             }
             catch (Exception ex)
             {

@@ -29,6 +29,10 @@
                           x:Name="lstItems"
                           ItemsSource="{Binding Radios}"
                           SelectedItem="{Binding SelectedRadio}">
+                    <ListView.InputBindings>
+                        <KeyBinding Command="{Binding DeleteCommand}" Key="Delete"/>
+                        <KeyBinding Command="{Binding UpdateCommand}" Key="Insert"/>
+                    </ListView.InputBindings>
                     <ListView.View>
                         <GridView AllowsColumnReorder="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <GridViewColumn Header="Nazwa stacji" Width="340" DisplayMemberBinding="{Binding NazwaStacja}"/>
