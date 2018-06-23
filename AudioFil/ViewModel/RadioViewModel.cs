@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using Tulpep.NotificationWindow;
 using WMPLib;
 
@@ -13,6 +14,10 @@ namespace AudioFil
         private ObservableCollection<Radio> radios;
 
         private XMLHandling xml;
+
+        private LowLevelKeyboardListener listener;
+
+        private bool play = false;
 
         public ObservableCollection<Radio> Radios
         {
@@ -105,6 +110,14 @@ namespace AudioFil
             wmp = new WindowsMediaPlayer();
 
             wmp.StatusChange += CheckStatus;
+
+            listener = new LowLevelKeyboardListener();
+            listener.OnKeyPressed += OnKeyPressed;
+            listener.HookKeyboard();
+
+            App.Current.Exit += (ss, ee) => {
+                listener.UnHookKeyboard();
+            };
         }
 
         private void CheckStatus()
@@ -141,7 +154,12 @@ namespace AudioFil
         private void Play()
         {
             if (SelectedRadio == null)
-                return;
+            {
+                if (Radios[0] != null)
+                    SelectedRadio = Radios[0];
+                else
+                    return;
+            }
 
             wmp.controls.stop();
             if(oldRadio != null)
@@ -206,6 +224,29 @@ namespace AudioFil
             {
                 xml.DeleteRadio(SelectedRadio);
                 Radios.Remove(Radios.Where(r => r == SelectedRadio).FirstOrDefault());
+            }
+        }
+
+        private void OnKeyPressed(object sender, KeyPressedArgs e)
+        {
+            switch (e.KeyPressed)
+            {
+                case Key.MediaPlayPause:
+                    if (play)
+                        Stop();
+                    else
+                        Play();
+
+                    play = !play;
+                    break;
+
+                case Key.MediaNextTrack:
+                    Next();
+                    break;
+
+                case Key.MediaPreviousTrack:
+                    Previous();
+                    break;
             }
         }
     }

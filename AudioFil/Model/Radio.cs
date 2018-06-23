@@ -25,9 +25,9 @@ namespace AudioFil
 
         static readonly ReadOnlyCollection<string> metadataSongPatterns = new ReadOnlyCollection<string>(new string[]
         {
-            @"StreamTitle='(?<title>[^~]+?) / (?<artist>[^~]+?)'",
-            @"StreamTitle='(?<title>[^~]+?) - (?<artist>[^~]+?)'",
-            @"StreamTitle='(?<title>.+?)~(?<artist>.+?)~",
+            "StreamTitle=\'(?<title>[^~]+?) / (?<artist>[^~]+?)\'",
+            "StreamTitle=\'(?<title>[^~]+?) - (?<artist>[^~]+?)\'",
+            "StreamTitle=\'(?<title>.+?)~(?<artist>.+?)~",
         });
 
         public int IdStacja { get; set; }
