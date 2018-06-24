@@ -3,20 +3,22 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace AudioFil
 {
     public class XMLHandling
     {
         private XmlDocument doc;
-        private readonly string path = "Playlista.xml";
+        private readonly string pathRadio = "Playlista.xml";
+        private readonly string pathSongs = @"C:\Users\huber\Music\Listy odtwarzania\MUZA.wpl";
 
         public ObservableCollection<Radio> LoadRadios(ObservableCollection<Radio> radios)
         {
             doc = new XmlDocument();
             try
             {
-                doc.Load(path);
+                doc.Load(pathRadio);
                 int stacje = doc.GetElementsByTagName("Stacja").Count;
                 radios = new ObservableCollection<Radio>();
 
@@ -43,7 +45,7 @@ namespace AudioFil
             doc = new XmlDocument();
             try
             {
-                doc.Load(path);
+                doc.Load(pathRadio);
                 int count = (doc.GetElementsByTagName("Stacja").Count) + 1;
 
                 XmlNode root = doc.SelectSingleNode("AudioFil");
@@ -60,7 +62,7 @@ namespace AudioFil
                 stacja.AppendChild(url);
                 root.AppendChild(stacja);
 
-                doc.Save(path);
+                doc.Save(pathRadio);
             }
             catch (Exception ex)
             {
@@ -74,7 +76,7 @@ namespace AudioFil
 
             try
             {
-                doc.Load(path);
+                doc.Load(pathRadio);
 
                 foreach(XmlNode node in doc.GetElementsByTagName("Stacja"))
                 {
@@ -86,7 +88,7 @@ namespace AudioFil
                     }
                 }
 
-                doc.Save(path);
+                doc.Save(pathRadio);
             }
             catch(Exception ex)
             {
@@ -98,9 +100,39 @@ namespace AudioFil
         {
             try
             {
-                XDocument xDoc = XDocument.Load(path);
+                XDocument xDoc = XDocument.Load(pathRadio);
                 xDoc.Root.Elements("Stacja").Elements("Id").Where(stat => stat.Value == r.IdStacja.ToString()).Select(stat => stat.Parent).Remove();
-                xDoc.Save(path);
+                xDoc.Save(pathRadio);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public List<string> LoadSongs(List<string> songs)
+        {
+            try
+            {
+                XDocument xDoc = XDocument.Load(pathSongs);
+
+                songs = new List<string>();
+
+                List<XAttribute> srcsX = xDoc.Descendants().SelectMany(s => s.Attributes()).Where(a => a.Name.LocalName == "src").ToList();
+                List<string> srcs = srcsX.ConvertAll(delegate (XAttribute attr)
+                {
+                    return attr.ToString();
+                });
+                foreach(string src in srcs)
+                {
+                    string s = src.Replace("src=", "");
+                    s = s.Replace("\"", "");
+                    s = s.Replace("\\", "/");
+
+                    songs.Add(s);
+                }                
+
+                return songs;
             }
             catch (Exception ex)
             {

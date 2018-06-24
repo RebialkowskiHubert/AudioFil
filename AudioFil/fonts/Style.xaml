@@ -9,7 +9,6 @@
         <Setter Property="FontFamily" Value="{StaticResource FontAwesome}"/>
         <Setter Property="FontSize" Value="30"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="White"/>
         <Setter Property="Margin" Value="10"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
@@ -17,7 +16,6 @@
     <Style TargetType="{x:Type TextBlock}" x:Key="Etykieta">
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="White"/>
         <Setter Property="Margin" Value="0 20"/>
     </Style>
 

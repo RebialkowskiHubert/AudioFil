@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace AudioFil
 {
     /// <summary>
-    /// Logika interakcji dla klasy RadioView.xaml
+    /// Logika interakcji dla klasy RadioViewModel.xaml
     /// </summary>
-    public partial class RadioView : UserControl
+    public partial class PlayerView : UserControl
     {
-        public RadioView()
+        public PlayerView()
         {
             InitializeComponent();
         }
