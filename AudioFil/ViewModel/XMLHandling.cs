@@ -151,7 +151,6 @@ namespace AudioFil
                 XmlElement song = doc.CreateElement("media");
 
                 song.SetAttribute("src", songPath);
-                song.SetAttribute("tid", Guid.NewGuid().ToString());
                 
                 lista.AppendChild(song);
 
