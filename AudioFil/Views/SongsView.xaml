@@ -14,7 +14,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="3*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -56,8 +56,12 @@
                    Style="{StaticResource Etykieta}"
                    FontWeight="Normal"
                    VerticalAlignment="Bottom"/>
+        
+        <ProgressBar Grid.Row="4"
+                     Height="5"
+                     Maximum="{Binding SelectedSong.Time}"/>
 
-        <WrapPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <WrapPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Button 
                     Style="{StaticResource Klawisze}"
                     Content="{StaticResource FontPrev}"

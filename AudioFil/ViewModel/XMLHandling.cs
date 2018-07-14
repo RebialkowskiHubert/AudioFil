@@ -139,5 +139,28 @@ namespace AudioFil
                 throw new Exception(ex.Message);
             }
         }
+
+        public void AddSong(string songPath)
+        {
+            doc = new XmlDocument();
+            try
+            {
+                doc.Load(pathSongs);
+
+                XmlNode lista = doc.SelectSingleNode("seq");
+                XmlElement song = doc.CreateElement("media");
+
+                song.SetAttribute("src", songPath);
+                song.SetAttribute("tid", Guid.NewGuid().ToString());
+                
+                lista.AppendChild(song);
+
+                doc.Save(pathSongs);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
