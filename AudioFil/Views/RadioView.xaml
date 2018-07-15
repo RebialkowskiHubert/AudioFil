@@ -37,13 +37,10 @@
             </ListView.View>
         </ListView>
 
-        <TextBlock Text="{Binding Title}"
+        <TextBox Text="{Binding Title}"
                    Grid.Row="2"
                    x:Name="tbTytul"
-                   Style="{StaticResource Etykieta}"
-                   TextWrapping="Wrap"
-                   FontWeight="Normal"
-                   VerticalAlignment="Bottom"/>
+                   Style="{StaticResource TytulPiosenki}"/>
 
 
         <TextBlock Text="{Binding Description}"
