@@ -142,24 +142,14 @@ namespace AudioFil
 
         public void AddSong(string songPath)
         {
-            doc = new XmlDocument();
-            try
-            {
-                doc.Load(pathSongs);
+            XDocument xdoc = XDocument.Load(pathSongs);
 
-                XmlNode lista = doc.SelectSingleNode("seq");
-                XmlElement song = doc.CreateElement("media");
+            xdoc.Root.Element("body").Element("seq").Add
+                (
+                    new XElement("media", new XAttribute("src", songPath))
+                );
 
-                song.SetAttribute("src", songPath);
-                
-                lista.AppendChild(song);
-
-                doc.Save(pathSongs);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            xdoc.Save(pathSongs);
         }
     }
 }
