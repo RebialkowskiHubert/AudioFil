@@ -56,11 +56,11 @@
                    Style="{StaticResource Etykieta}"
                    FontWeight="Normal"
                    VerticalAlignment="Bottom"/>
-        
-        <ProgressBar Grid.Row="4"
-                     Height="5"
-                     Maximum="{Binding SelectedSong.Time}"/>
 
+        <Slider Grid.Row="4"
+                Maximum="100"
+                Value="{Binding RealTime, Mode=TwoWay}"/>
+        
         <WrapPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Button 
                     Style="{StaticResource Klawisze}"
@@ -88,6 +88,9 @@
                     Style="{StaticResource Klawisze}"
                     Content="{StaticResource FontStop}"
                     Command="{Binding StopCommand}"/>
+
+            <TextBlock Text="{Binding RealTime}"
+                       Style="{StaticResource Etykieta}"/>
         </WrapPanel>
     </Grid>
 </UserControl>

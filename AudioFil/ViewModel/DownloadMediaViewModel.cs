@@ -9,6 +9,7 @@ namespace AudioFil
     public class DownloadMediaViewModel : PropChanged
     {
         private XMLHandling xMLHandling;
+        private BackgroundWorker worker;
 
         private string urlDown;
         public string UrlDown
@@ -84,11 +85,11 @@ namespace AudioFil
 
         public void RunDownload()
         {
-            BackgroundWorker worker = new BackgroundWorker();
+            worker = new BackgroundWorker();
             worker.RunWorkerCompleted += OnComplete;
             worker.WorkerReportsProgress = true;
             worker.DoWork += StartDownload;
-            worker.ProgressChanged += ProgressChanged;
+            worker.ProgressChanged += new ProgressChangedEventHandler(ProgressChanged);
             worker.RunWorkerAsync();
             StrProgress = "0%";
         }
@@ -98,9 +99,13 @@ namespace AudioFil
             YouTube yt = YouTube.Default;
             YouTubeVideo video = yt.GetVideo(UrlDown);
 
+            worker.ReportProgress(25);
+
             string audioPath = @"D:\Muza\Muza\" + video.FullName;
 
             File.WriteAllBytes(audioPath, video.GetBytes());
+
+            worker.ReportProgress(50);
 
             MediaFile input = new MediaFile { Filename = audioPath };
             MediaFile output = new MediaFile { Filename = $"{audioPath}.mp3" };
@@ -109,19 +114,24 @@ namespace AudioFil
             {
                 engine.GetMetadata(input);
                 engine.Convert(input, output);
+                worker.ReportProgress(90);
             }
 
             File.Delete(input.Filename);
 
+            worker.ReportProgress(99);
+
             xMLHandling = new XMLHandling();
 
             xMLHandling.AddSong(output.Filename);
+
+            worker.ReportProgress(100);
         }
 
         private void ProgressChanged(object o, ProgressChangedEventArgs e)
         {
             Progress = e.ProgressPercentage;
-            StrProgress = (string)e.UserState;
+            StrProgress = Progress.ToString() + "%";
         }
 
         private void OnComplete(object o, RunWorkerCompletedEventArgs e)

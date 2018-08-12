@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
+using System.Threading.Tasks;
 using WMPLib;
 
 namespace AudioFil
@@ -40,8 +39,8 @@ namespace AudioFil
             }
         }
 
-        private DateTime realTime;
-        public DateTime RealTime
+        private int realTime;
+        public int RealTime
         {
             get => realTime;
             set
@@ -50,6 +49,11 @@ namespace AudioFil
                 {
                     realTime = value;
                     RaisePropertyChanged("RealTime");
+
+                    if(wmp.controls.currentItem != null)
+                    {
+                        //wmp.controls.currentPosition = (realTime * wmp.controls.currentItem.duration) / 100;
+                    }
                 }
             }
         }
@@ -147,6 +151,9 @@ namespace AudioFil
                 return;
 
             wmp.controls.play();
+
+            UpdateTime();
+
             PlayPause(true);
         }
 
@@ -183,6 +190,19 @@ namespace AudioFil
         private void CheckStatus()
         {
             Description = wmp.status;
+        }
+
+        private void UpdateTime()
+        {
+            int i;
+            Task.Run(async () =>
+            {
+                for(i = 0; i <= wmp.controls.currentItem.duration; i++)
+                {
+                    RealTime = (int) ((wmp.controls.currentPosition * 100) / wmp.controls.currentItem.duration);
+                    await Task.Delay(1000);
+                }
+            });
         }
     }
 }
