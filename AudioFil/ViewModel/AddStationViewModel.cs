@@ -2,18 +2,13 @@
 
 namespace AudioFil
 {
-    public class AddStationViewModel : PropChanged
+    public class AddStationViewModel : BindableBase
     {
-        private string stationName;
         private bool edit;
         public bool Edit
         {
             get => edit;
-            set
-            {
-                edit = value;
-                RaisePropertyChanged("Edit");
-            }
+            set => SetProperty(ref edit, value, "Edit");
         }
 
 
@@ -21,24 +16,14 @@ namespace AudioFil
         public bool Add
         {
             get => add;
-            set
-            {
-                add = value;
-                RaisePropertyChanged("Add");
-            }
+            set => SetProperty(ref add, value, "Add");
         }
 
+        private string stationName;
         public string StationName
         {
             get => stationName;
-            set
-            {
-                if(stationName != value)
-                {
-                    stationName = value;
-                    RaisePropertyChanged("StationName");
-                }
-            }
+            set => SetProperty(ref stationName, value, "StationName");
         }
 
 
@@ -46,14 +31,7 @@ namespace AudioFil
         public string StationUrl
         {
             get => stationUrl;
-            set
-            {
-                if(stationUrl != value)
-                {
-                    stationUrl = value;
-                    RaisePropertyChanged("StationUrl");
-                }
-            }
+            set => SetProperty(ref stationUrl, value, "StationUrl");
         }
 
         public RelayCommand<Window> SaveCommand { get; set; }

@@ -3,34 +3,20 @@ using System.Windows.Controls;
 
 namespace AudioFil
 {
-    public class DownloaderViewModel : PropChanged
+    public class DownloaderViewModel : BindableBase
     {
         private string url;
         public string Url
         {
-            get => url; 
-            set
-            {
-                if(url != value)
-                {
-                    url = value;
-                    RaisePropertyChanged("Url");
-                    DownloadCommand.RaiseCanExecuteChanged();
-                }
-            }
+            get => url;
+            set => SetProperty(ref url, value, "Url");
         }
 
         private ObservableCollection<Control> downloadedMedia;
         public ObservableCollection<Control> DownloadedMedia
         {
             get => downloadedMedia;
-            set
-            {
-                if(downloadedMedia != value)
-                {
-                    downloadedMedia = value;
-                }
-            }
+            set => SetProperty(ref downloadedMedia, value, "DownloadedMedia");
         }
 
 

@@ -12,14 +12,7 @@ namespace AudioFil
         public ObservableCollection<Radio> Radios
         {
             get => radios;
-            set
-            {
-                if (radios != value)
-                {
-                    radios = value;
-                    RaisePropertyChanged("Radios");
-                }
-            }
+            set => SetProperty(ref radios, value, "Radios");
         }
 
         private Radio oldRadio;
@@ -34,7 +27,7 @@ namespace AudioFil
                 {
                     oldRadio = selectedRadio;
                     selectedRadio = value;
-                    RaisePropertyChanged("SelectedRadio");
+                    OnPropertyChanged("SelectedRadio");
                     Play();
                     DeleteCommand.RaiseCanExecuteChanged();
                     UpdateCommand.RaiseCanExecuteChanged();
@@ -54,7 +47,7 @@ namespace AudioFil
                     if (string.IsNullOrEmpty(title))
                         title = "Brak tytułu";
 
-                    RaisePropertyChanged("Title");
+                    OnPropertyChanged("Title");
                 }
             }
         }
@@ -63,14 +56,7 @@ namespace AudioFil
         public string Description
         {
             get => description;
-            set
-            {
-                if (description != value)
-                {
-                    description = value;
-                    RaisePropertyChanged("Description");
-                }
-            }
+            set => SetProperty(ref description, value, "Description");
         }
 
         public RelayCommand PlayCommand { get; set; }

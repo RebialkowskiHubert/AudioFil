@@ -2,7 +2,7 @@
 
 namespace AudioFil
 {
-    public class PlayerViewModel : PropChanged
+    public class PlayerViewModel : BindableBase
     {
         protected WindowsMediaPlayer wmp;
 

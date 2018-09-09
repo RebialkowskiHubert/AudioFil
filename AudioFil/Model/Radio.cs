@@ -63,7 +63,6 @@ namespace AudioFil
             get =>_currentSong;
             set
             {
-                //if(OnCurrentSongChanged!=null){OnCurrentSongChanged=(this, new...);} to samo co OnCurrentSongChanged?.Invoke
                 OnCurrentSongChanged?.Invoke(this, new CurrentSongEventArgs(_currentSong, value));
 
                 _currentSong = value;

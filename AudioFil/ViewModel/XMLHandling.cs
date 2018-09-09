@@ -110,36 +110,6 @@ namespace AudioFil
             }
         }
 
-        public List<string> LoadSongs(List<string> songs)
-        {
-            try
-            {
-                XDocument xDoc = XDocument.Load(pathSongs);
-
-                songs = new List<string>();
-
-                List<XAttribute> srcsX = xDoc.Descendants().SelectMany(s => s.Attributes()).Where(a => a.Name.LocalName == "src").ToList();
-                List<string> srcs = srcsX.ConvertAll(delegate (XAttribute attr)
-                {
-                    return attr.ToString();
-                });
-                foreach(string src in srcs)
-                {
-                    string s = src.Replace("src=", "");
-                    s = s.Replace("\"", "");
-                    s = s.Replace("\\", "/");
-
-                    songs.Add(s);
-                }                
-
-                return songs;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
         public void AddSong(string songPath)
         {
             XDocument xdoc = XDocument.Load(pathSongs);

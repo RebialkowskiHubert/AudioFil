@@ -8,18 +8,14 @@ namespace AudioFil
 {
     public sealed class SongsViewModel : PlayerViewModel, IPlayer
     {
+        private IWMPPlaylist playlist;
+        private IWMPPlaylistArray array;
+
         private ObservableCollection<Song> songs;
         public ObservableCollection<Song> Songs
         {
             get => songs;
-            set
-            {
-                if(songs != value)
-                {
-                    songs = value;
-                    RaisePropertyChanged("Songs");
-                }
-            }
+            set => SetProperty(ref songs, value, "Songs");
         }
 
 
@@ -32,7 +28,7 @@ namespace AudioFil
                 if(selectedSong != value)
                 {
                     selectedSong = value;
-                    RaisePropertyChanged("SelectedSong");
+                    OnPropertyChanged("SelectedSong");
                     wmp.URL = SelectedSong.Path;
                     Play();
                 }
@@ -48,7 +44,7 @@ namespace AudioFil
                 if(realTime != value)
                 {
                     realTime = value;
-                    RaisePropertyChanged("RealTime");
+                    OnPropertyChanged("RealTime");
 
                     if(wmp.controls.currentItem != null)
                     {
@@ -62,42 +58,21 @@ namespace AudioFil
         public string Description
         {
             get => description;
-            set
-            {
-                if (description != value)
-                {
-                    description = value;
-                    RaisePropertyChanged("Description");
-                }
-            }
+            set => SetProperty(ref description, value, "Description");
         }
 
         private bool pauseBool = false;
         public bool PauseBool
         {
             get => pauseBool;
-            set
-            {
-                if(pauseBool != value)
-                {
-                    pauseBool = value;
-                    RaisePropertyChanged("PauseBool");
-                }
-            }
+            set => SetProperty(ref pauseBool, value, "PauseBool");
         }
 
         private bool playBool = true;
         public bool PlayBool
         {
             get => playBool;
-            set
-            {
-                if (playBool != value)
-                {
-                    playBool = value;
-                    RaisePropertyChanged("PlayBool");
-                }
-            }
+            set => SetProperty(ref playBool, value, "PlayBool");
         }
 
         public RelayCommand PlayCommand { get; set; }
@@ -105,8 +80,6 @@ namespace AudioFil
         public RelayCommand StopCommand { get; set; }
         public RelayCommand NextCommand { get; set; }
         public RelayCommand PreviousCommand { get; set; }
-
-        private List<string> SongsPathList;
 
         public SongsViewModel()
         {
@@ -121,28 +94,35 @@ namespace AudioFil
             wmp.StatusChange += CheckStatus;
         }
 
+
         private void LoadSongs()
         {
-            SongsPathList = xml.LoadSongs(SongsPathList);
             Songs = new ObservableCollection<Song>();
 
-            foreach(string path in SongsPathList)
+            array = wmp.playlistCollection.getByName("MUZA");
+            playlist = array.Item(0);
+
+            int i;
+            for(i = 0; i < playlist.count; i++)
             {
-                IWMPMedia song = wmp.newMedia(path);
+                IWMPMedia song = playlist.Item[i];
                 Songs.Add(new Song()
                 {
                     Title = song.getItemInfo("Title"),
                     Artist = song.getItemInfo("Artist"),
-                    Path = path,
+                    Path = song.sourceURL,
                     Time = DateTime.Parse(song.durationString)
                 });
             }
+            
+            wmp.currentPlaylist = playlist;
+            wmp.controls.stop();
         }
 
-        private void PlayPause(bool b)
+        private void PlayPause()
         {
-            PauseBool = b;
-            PlayBool = !b;
+            PauseBool = (Description != "Gotowy" && Description != "Zatrzymanie" && Description != "Wstrzymanie") ? true : false;
+            PlayBool = !PauseBool;
         }
 
         public void Play()
@@ -154,19 +134,19 @@ namespace AudioFil
 
             UpdateTime();
 
-            PlayPause(true);
+            PlayPause();
         }
 
         public void Pause()
         {
             wmp.controls.pause();
-            PlayPause(false);
+            PlayPause();
         }
 
         public void Stop()
         {
             wmp.controls.stop();
-            PlayPause(false);
+            PlayPause();
         }
 
         public void Next()
@@ -197,7 +177,7 @@ namespace AudioFil
             int i;
             Task.Run(async () =>
             {
-                for(i = 0; i <= wmp.controls.currentItem.duration; i++)
+                for(i = 0; i < wmp.controls.currentItem.duration; i++)
                 {
                     RealTime = (int) ((wmp.controls.currentPosition * 100) / wmp.controls.currentItem.duration);
                     await Task.Delay(1000);

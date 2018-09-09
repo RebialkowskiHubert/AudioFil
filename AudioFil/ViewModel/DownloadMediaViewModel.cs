@@ -6,7 +6,7 @@ using MediaToolkit;
 
 namespace AudioFil
 {
-    public class DownloadMediaViewModel : PropChanged
+    public class DownloadMediaViewModel : BindableBase
     {
         private XMLHandling xMLHandling;
         private BackgroundWorker worker;
@@ -15,14 +15,7 @@ namespace AudioFil
         public string UrlDown
         {
             get => urlDown;
-            set
-            {
-                if(urlDown != value)
-                {
-                    urlDown = value;
-                    RaisePropertyChanged("UrlDown");
-                }
-            }
+            set => SetProperty(ref urlDown, value, "UrlDown");
         }
 
 
@@ -30,56 +23,28 @@ namespace AudioFil
         public string NameDown
         {
             get => nameDown;
-            set
-            {
-                if(nameDown != value)
-                {
-                    nameDown = value;
-                    RaisePropertyChanged("NameDown");
-                }
-            }
+            set => SetProperty(ref nameDown, value, nameof(NameDown));
         }
 
         private int progress;
         public int Progress
         {
             get => progress;
-            set
-            {
-                if(progress != value)
-                {
-                    progress = value;
-                    RaisePropertyChanged("Progress");
-                }
-            }
+            set => SetProperty(ref progress, value, "Progress");
         }
 
         private string strProgress;
         public string StrProgress
         {
             get => strProgress;
-            set
-            {
-                if (strProgress != value)
-                {
-                    strProgress = value;
-                    RaisePropertyChanged("StrProgress");
-                }
-            }
+            set => SetProperty(ref strProgress, value, "StrProgress");
         }
 
         private bool progressBusy;
         public bool ProgressBusy
         {
             get => progressBusy;
-            set
-            {
-                if(progressBusy != value)
-                {
-                    progressBusy = value;
-                    RaisePropertyChanged("ProgressBusy");
-                }
-            }
+            set => SetProperty(ref progressBusy, value, "ProgressBusy");
         }
 
 
