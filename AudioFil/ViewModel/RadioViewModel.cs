@@ -75,6 +75,7 @@ namespace AudioFil
             StopCommand = new RelayCommand(Stop);
             NextCommand = new RelayCommand(Next);
             PreviousCommand = new RelayCommand(Previous);
+            AddCommand = new RelayCommand<Radio>(Add);
             UpdateCommand = new RelayCommand(Update, IsSelected);
             DeleteCommand = new RelayCommand(Delete, IsSelected);
 
@@ -162,7 +163,7 @@ namespace AudioFil
                 av.DataContext = avm;
             }
 
-            av.Show();
+            av.ShowDialog();
 
             av.Closed += (ss, ee) =>
             {

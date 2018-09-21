@@ -3,7 +3,8 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Xml.Linq;
-using System.Collections.Generic;
+using System.IO;
+using System.Windows;
 
 namespace AudioFil
 {
@@ -11,13 +12,38 @@ namespace AudioFil
     {
         private XmlDocument doc;
         private readonly string pathRadio = "Playlista.xml";
-        private readonly string pathSongs = @"C:\Users\huber\Music\Listy odtwarzania\MUZA.wpl";
+        private readonly string pathSongs = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + "\\" + "Listy odtwarzania\\MUZA.wpl";
+
+        private void CreateRadioPlaylistFile()
+        {
+            using(StreamWriter sw = new StreamWriter(pathRadio))
+            {
+                sw.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+                sw.WriteLine("<AudioFil>");
+                sw.WriteLine("</AudioFil>");
+            }
+        }
+
+        private void CreateSongsPlaylistFile()
+        {
+            Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + "\\" + "Listy odtwarzania");
+            using (StreamWriter sw = new StreamWriter(pathSongs))
+            {
+                sw.WriteLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<?wpl version=\"1.0\"?>\n<smil>\n<head>\n<meta name=\"Generator\" content=\"Microsoft Windows Media Player -- 12.0.17134.48\"/>\n<meta name=\"ItemCount\" content=\"146\"/>\n<meta name=\"IsFavorite\"/>\n<meta name=\"ContentPartnerListID\"/>\n<meta name=\"ContentPartnerNameType\"/>\n<meta name=\"ContentPartnerName\"/>\n<meta name=\"Subtitle\"/>\n<author/>\n<title>MUZA</title>\n</head>\n<body>\n<seq>\n</seq>\n</body>\n</smil>");
+            }
+        }
 
         public ObservableCollection<Radio> LoadRadios(ObservableCollection<Radio> radios)
         {
             doc = new XmlDocument();
             try
             {
+                if (!File.Exists(pathRadio))
+                    CreateRadioPlaylistFile();
+
+                if (!File.Exists(pathSongs))
+                    CreateSongsPlaylistFile();
+
                 doc.Load(pathRadio);
                 int stacje = doc.GetElementsByTagName("Stacja").Count;
                 radios = new ObservableCollection<Radio>();
@@ -36,7 +62,8 @@ namespace AudioFil
             }
             catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                MessageBox.Show(ex.Message);
+                return null;
             }
         }
 

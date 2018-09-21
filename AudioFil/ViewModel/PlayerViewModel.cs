@@ -1,4 +1,6 @@
-﻿using WMPLib;
+﻿using System;
+using System.Windows;
+using WMPLib;
 
 namespace AudioFil
 {
@@ -14,15 +16,22 @@ namespace AudioFil
 
         public PlayerViewModel()
         {
-            xml = new XMLHandling();
+            try
+            {
+                xml = new XMLHandling();
 
-            wmp = new WindowsMediaPlayer();
+                wmp = new WindowsMediaPlayer();
 
-            listener = new LowLevelKeyboardListener();
+                listener = new LowLevelKeyboardListener();
 
-            App.Current.Exit += (ss, ee) => {
-                listener.UnHookKeyboard();
-            };
+                App.Current.Exit += (ss, ee) => {
+                    listener.UnHookKeyboard();
+                };
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

@@ -1,8 +1,12 @@
 ﻿using System.ComponentModel;
 using System.IO;
-using VideoLibrary;
 using MediaToolkit.Model;
 using MediaToolkit;
+using System;
+using System.Windows;
+using YoutubeExtractor;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AudioFil
 {
@@ -40,14 +44,6 @@ namespace AudioFil
             set => SetProperty(ref strProgress, value, "StrProgress");
         }
 
-        private bool progressBusy;
-        public bool ProgressBusy
-        {
-            get => progressBusy;
-            set => SetProperty(ref progressBusy, value, "ProgressBusy");
-        }
-
-
         public void RunDownload()
         {
             worker = new BackgroundWorker();
@@ -61,36 +57,61 @@ namespace AudioFil
 
         private void StartDownload(object o, DoWorkEventArgs e)
         {
-            YouTube yt = YouTube.Default;
-            YouTubeVideo video = yt.GetVideo(UrlDown);
-
-            worker.ReportProgress(25);
-
-            string audioPath = @"D:\Muza\Muza\" + video.FullName;
-
-            File.WriteAllBytes(audioPath, video.GetBytes());
-
-            worker.ReportProgress(50);
-
-            MediaFile input = new MediaFile { Filename = audioPath };
-            MediaFile output = new MediaFile { Filename = $"{audioPath}.mp3" };
-
-            using(Engine engine = new Engine())
+            try
             {
-                engine.GetMetadata(input);
-                engine.Convert(input, output);
-                worker.ReportProgress(90);
+                IEnumerable<VideoInfo> videoInfo = DownloadUrlResolver.GetDownloadUrls(UrlDown);
+
+                VideoInfo video = videoInfo.First(i => i.VideoType == VideoType.Mp4 && i.Resolution == 360);
+
+                worker.ReportProgress(25);
+
+                if (video.RequiresDecryption)
+                    DownloadUrlResolver.DecryptDownloadUrl(video);
+
+                char[] illegal = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
+
+                string audioPath = video.Title;
+
+                foreach(char character in illegal)
+                {
+                    if (audioPath.Contains(character))
+                        audioPath = audioPath.Replace(character, ' ');
+                }
+
+                if (Properties.Settings.Default.MusicPath != "")
+                    audioPath = Properties.Settings.Default.MusicPath + "\\" + audioPath;
+                else
+                    audioPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + "\\" + audioPath;
+
+                VideoDownloader downloader = new VideoDownloader(video, audioPath);
+                downloader.Execute();
+
+                worker.ReportProgress(50);
+
+                MediaFile input = new MediaFile { Filename = audioPath };
+                MediaFile output = new MediaFile { Filename = $"{audioPath}.mp3" };
+
+                using (Engine engine = new Engine())
+                {
+                    engine.GetMetadata(input);
+                    engine.Convert(input, output);
+                    worker.ReportProgress(90);
+                }
+
+                File.Delete(input.Filename);
+
+                worker.ReportProgress(99);
+
+                xMLHandling = new XMLHandling();
+
+                xMLHandling.AddSong(output.Filename);
+
+                worker.ReportProgress(100);
             }
-
-            File.Delete(input.Filename);
-
-            worker.ReportProgress(99);
-
-            xMLHandling = new XMLHandling();
-
-            xMLHandling.AddSong(output.Filename);
-
-            worker.ReportProgress(100);
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ProgressChanged(object o, ProgressChangedEventArgs e)

@@ -8,13 +8,13 @@
              mc:Ignorable="d">
     <Border Padding="10">
         <TabControl>
-            <TabItem Header="Radio">
+            <TabItem Header="Radio internetowe">
                 <local:RadioView/>
             </TabItem>
             <TabItem Header="Odtwarzacz">
                 <local:SongsView/>
             </TabItem>
-            <TabItem Header="Pobieracz">
+            <TabItem Header="Pobieranie utworów YouTube">
                 <local:DownloaderView/>
             </TabItem>
         </TabControl>
