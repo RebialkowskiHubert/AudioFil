@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:AudioFil"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-    <FontFamily x:Key="FontAwesome">pack://application:,,,/fonts/#FontAwesome</FontFamily>
+    <FontFamily x:Key="FontAwesome">pack://application:,,,/Styles/#FontAwesome</FontFamily>
 
     <Style TargetType="{x:Type Control}" x:Key="Klawisze">
         <Setter Property="FontFamily" Value="{StaticResource FontAwesome}"/>

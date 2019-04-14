@@ -1,11 +1,7 @@
 ﻿using System.ComponentModel;
 using System.IO;
-using MediaToolkit.Model;
-using MediaToolkit;
 using System;
 using System.Windows;
-using YoutubeExtractor;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AudioFil
@@ -57,8 +53,10 @@ namespace AudioFil
 
         private void StartDownload(object o, DoWorkEventArgs e)
         {
-            try
+            /*try
             {
+                YouTube yt = YouTube.Default;
+                YouTubeVideo video = yt.GetVideo(UrlDown);
                 IEnumerable<VideoInfo> videoInfo = DownloadUrlResolver.GetDownloadUrls(UrlDown);
 
                 VideoInfo video = videoInfo.First(i => i.VideoType == VideoType.Mp4 && i.Resolution == 360);
@@ -83,8 +81,10 @@ namespace AudioFil
                 else
                     audioPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + "\\" + audioPath;
 
-                VideoDownloader downloader = new VideoDownloader(video, audioPath);
-                downloader.Execute();
+                 VideoDownloader downloader = new VideoDownloader(video, audioPath);
+                 downloader.Execute();
+
+                File.WriteAllBytes(audioPath, video.GetBytes());
 
                 worker.ReportProgress(50);
 
@@ -111,7 +111,7 @@ namespace AudioFil
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }*/
         }
 
         private void ProgressChanged(object o, ProgressChangedEventArgs e)
