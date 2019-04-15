@@ -2,10 +2,21 @@
 
 namespace AudioFil
 {
-    public class SongInfo
+    public class SongInfo : BindableBase
     {
-        public string Artist { get; set; }
-        public string Title { get; set; }
+        private string artist;
+        public string Artist
+        {
+            get => artist;
+            set => SetProperty(ref artist, value, nameof(Artist));
+        }
+
+        private string title;
+        public string Title
+        {
+            get => title;
+            set => SetProperty(ref title, value, nameof(Title));
+        }
 
         public SongInfo(string artist, string title)
         {

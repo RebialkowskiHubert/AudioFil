@@ -32,7 +32,18 @@
             </ListView.InputBindings>
             <ListView.View>
                 <GridView AllowsColumnReorder="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <GridViewColumn Header="Stacje" Width="348" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Stacja" Width="150" DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Piosenka" Width="380">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <WrapPanel>
+                                    <TextBlock Text="{Binding CurrentSong.Artist}"/>
+                                    <TextBlock Text="-"/>
+                                    <TextBlock Text="{Binding CurrentSong.Title}"/>
+                                </WrapPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

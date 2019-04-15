@@ -33,8 +33,8 @@ namespace AudioFil
             set
             {
                 running = value;
-                if (!running && runningTask != null)
-                    runningTask.Wait();
+                if (!running && RunningTask != null)
+                    RunningTask.Wait();
             }
         }
 
@@ -55,12 +55,12 @@ namespace AudioFil
             get => currentSong;
             set
             {
+                SetProperty(ref currentSong, value, nameof(CurrentSong));
                 OnCurrentSongChanged?.Invoke(this, new CurrentSongEventArgs(currentSong, value));
-                currentSong = value;
             }
         }
 
-        public Task runningTask;
+        public Task RunningTask;
 
         public event EventHandler<CurrentSongEventArgs> OnCurrentSongChanged;
         public event EventHandler<MetadataEventArgs> OnMetadataChanged;

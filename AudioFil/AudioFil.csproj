@@ -142,7 +142,6 @@
     <Compile Include="ViewModel\AddStationViewModel.cs" />
     <Compile Include="ViewModel\DownloaderViewModel.cs" />
     <Compile Include="ViewModel\DownloadMediaViewModel.cs" />
-    <Compile Include="ViewModel\IPlayer.cs" />
     <Compile Include="ViewModel\RadioViewModel.cs" />
     <Compile Include="ViewModel\XMLHandling.cs" />
     <Compile Include="Views\AddStationView.xaml.cs">

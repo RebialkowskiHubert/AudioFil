@@ -43,7 +43,7 @@ namespace AudioFil
 
         public void Start()
         {
-            radio.runningTask = Task.Run(() => GetHttpStream());
+            radio.RunningTask = Task.Run(() => GetHttpStream());
         }
 
         public void Stop()

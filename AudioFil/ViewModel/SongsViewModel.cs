@@ -5,7 +5,7 @@ using WMPLib;
 
 namespace AudioFil
 {
-    public sealed class SongsViewModel : PlayerViewModel, IPlayer
+    public sealed class SongsViewModel : PlayerViewModel
     {
         private IWMPPlaylist playlist;
         private IWMPPlaylistArray array;

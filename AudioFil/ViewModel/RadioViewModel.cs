@@ -6,7 +6,7 @@ using Tulpep.NotificationWindow;
 
 namespace AudioFil
 {
-    public sealed class RadioViewModel : PlayerViewModel, IPlayer
+    public sealed class RadioViewModel : PlayerViewModel
     {
         private ObservableCollection<Radio> radios;
         public ObservableCollection<Radio> Radios
@@ -14,8 +14,6 @@ namespace AudioFil
             get => radios;
             set => SetProperty(ref radios, value, "Radios");
         }
-
-        private Radio oldRadio;
 
         private Radio selectedRadio;
         public Radio SelectedRadio
@@ -25,13 +23,7 @@ namespace AudioFil
             {
                 if (selectedRadio != value)
                 {
-                    oldRadio = selectedRadio;
-
-                    if(oldRadio != null)
-                        oldListener = new RadioListener(oldRadio);
-
                     selectedRadio = value;
-                    listener = new RadioListener(selectedRadio);
                     OnPropertyChanged("SelectedRadio");
                     Play();
                     DeleteCommand.RaiseCanExecuteChanged();
@@ -72,9 +64,6 @@ namespace AudioFil
         public RelayCommand UpdateCommand { get; set; }
         public RelayCommand DeleteCommand { get; set; }
 
-        private RadioListener listener;
-        private RadioListener oldListener;
-
         public RadioViewModel()
         {
             Radios = xml.LoadRadios(Radios);
@@ -91,9 +80,30 @@ namespace AudioFil
 
             keyListener.OnKeyPressed += OnKeyPressed;
             keyListener.HookKeyboard();
+
+            InitRadioListener();
         }
 
-        public void Play()
+        private void InitRadioListener()
+        {
+            foreach(Radio radio in Radios)
+            {
+                RadioListener listener = new RadioListener(radio);
+                radio.OnMetadataChanged += listener.UpdateCurrentSong;
+                listener.Start();
+
+                radio.OnCurrentSongChanged += (ss, ee) =>
+                {
+                    App.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        radio.CurrentSong.Artist = ee.NewSong.Artist;
+                        radio.CurrentSong.Title = ee.NewSong.Title;
+                    });
+                };
+            }
+        }
+
+        private void Play()
         {
             if (SelectedRadio == null)
             {
@@ -104,13 +114,10 @@ namespace AudioFil
             }
 
             wmp.controls.stop();
-            if (oldListener != null)
-                oldListener.Stop();
 
             wmp.URL = SelectedRadio.Url.ToString();
             wmp.controls.play();
 
-            listener.Start();
             SelectedRadio.OnCurrentSongChanged += (ss, ee) =>
             {
                 Title = ee.NewSong.Artist + " - " + ee.NewSong.Title;
@@ -127,15 +134,16 @@ namespace AudioFil
             };
         }
 
-        public void Stop()
+        private void Stop()
         {
             wmp.controls.stop();
 
-            listener.Stop();
             Title = "";
+
+            SelectedRadio.Running = false;
         }
 
-        public void Next()
+        private void Next()
         {
             int index = Radios.IndexOf(SelectedRadio) + 1;
 
@@ -143,7 +151,7 @@ namespace AudioFil
                 SelectedRadio = Radios[index];
         }
 
-        public void Previous()
+        private void Previous()
         {
             int index = Radios.IndexOf(SelectedRadio) - 1;
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AudioFil"
         mc:Ignorable="d"
-        Title="AudioFil" Height="600" Width="410">
+        Title="AudioFil" Height="600" Width="600">
 
     <local:PlayerView x:Name="Radio"/>
 </Window>
