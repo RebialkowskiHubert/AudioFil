@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="{Binding SelectedRadio.NazwaStacja}"
+        <TextBlock Text="{Binding SelectedRadio.Name}"
                    Margin="10"
                    Grid.Row="0"
                    x:Name="tbRadio"
@@ -32,7 +32,7 @@
             </ListView.InputBindings>
             <ListView.View>
                 <GridView AllowsColumnReorder="True" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <GridViewColumn Header="Stacje" Width="348" DisplayMemberBinding="{Binding NazwaStacja}"/>
+                    <GridViewColumn Header="Stacje" Width="348" DisplayMemberBinding="{Binding Name}"/>
                 </GridView>
             </ListView.View>
         </ListView>

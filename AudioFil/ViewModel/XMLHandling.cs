@@ -54,7 +54,7 @@ namespace AudioFil
                     XmlNode stacja = doc.GetElementsByTagName("Stacja").Item(i);
                     var id = Int32.Parse(stacja.FirstChild.InnerText);
                     var nazwa = stacja.LastChild.PreviousSibling.InnerText;
-                    var url = stacja.LastChild.InnerText;
+                    var url = new Uri(stacja.LastChild.InnerText);
                     radios.Add(new Radio(id, nazwa, url));
                 }
 
@@ -80,9 +80,9 @@ namespace AudioFil
                 XmlNode id = doc.CreateNode(XmlNodeType.Element, "Id", null);
                 id.InnerText = count.ToString();
                 XmlNode nazwa = doc.CreateNode(XmlNodeType.Element, "Nazwa", null);
-                nazwa.InnerText = r.NazwaStacja;
+                nazwa.InnerText = r.Name;
                 XmlNode url = doc.CreateNode(XmlNodeType.Element, "Url", null);
-                url.InnerText = r.Url;
+                url.InnerText = r.Url.ToString();
 
                 stacja.AppendChild(id);
                 stacja.AppendChild(nazwa);
@@ -107,10 +107,10 @@ namespace AudioFil
 
                 foreach(XmlNode node in doc.GetElementsByTagName("Stacja"))
                 {
-                    if (node.FirstChild.InnerText.Equals(old.IdStacja.ToString()))
+                    if (node.FirstChild.InnerText.Equals(old.Id.ToString()))
                     {
-                        node.FirstChild.NextSibling.InnerText = newr.NazwaStacja;
-                        node.LastChild.InnerText = newr.Url;
+                        node.FirstChild.NextSibling.InnerText = newr.Name;
+                        node.LastChild.InnerText = newr.Url.ToString();
                         break;
                     }
                 }
@@ -128,7 +128,7 @@ namespace AudioFil
             try
             {
                 XDocument xDoc = XDocument.Load(pathRadio);
-                xDoc.Root.Elements("Stacja").Elements("Id").Where(stat => stat.Value == r.IdStacja.ToString()).Select(stat => stat.Parent).Remove();
+                xDoc.Root.Elements("Stacja").Elements("Id").Where(stat => stat.Value == r.Id.ToString()).Select(stat => stat.Parent).Remove();
                 xDoc.Save(pathRadio);
             }
             catch (Exception ex)

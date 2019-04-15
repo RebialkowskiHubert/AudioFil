@@ -10,7 +10,7 @@ namespace AudioFil
 
         protected XMLHandling xml;
 
-        protected LowLevelKeyboardListener listener;
+        protected LowLevelKeyboardListener keyListener;
 
         protected bool play = false;
 
@@ -22,10 +22,10 @@ namespace AudioFil
 
                 wmp = new WindowsMediaPlayer();
 
-                listener = new LowLevelKeyboardListener();
+                keyListener = new LowLevelKeyboardListener();
 
                 App.Current.Exit += (ss, ee) => {
-                    listener.UnHookKeyboard();
+                    keyListener.UnHookKeyboard();
                 };
             }
             catch(Exception ex)

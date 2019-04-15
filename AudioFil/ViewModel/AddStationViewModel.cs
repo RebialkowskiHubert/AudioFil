@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace AudioFil
 {
@@ -27,8 +28,8 @@ namespace AudioFil
         }
 
 
-        private string stationUrl;
-        public string StationUrl
+        private Uri stationUrl;
+        public Uri StationUrl
         {
             get => stationUrl;
             set => SetProperty(ref stationUrl, value, "StationUrl");

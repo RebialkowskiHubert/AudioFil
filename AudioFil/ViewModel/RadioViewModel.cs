@@ -26,7 +26,12 @@ namespace AudioFil
                 if (selectedRadio != value)
                 {
                     oldRadio = selectedRadio;
+
+                    if(oldRadio != null)
+                        oldListener = new RadioListener(oldRadio);
+
                     selectedRadio = value;
+                    listener = new RadioListener(selectedRadio);
                     OnPropertyChanged("SelectedRadio");
                     Play();
                     DeleteCommand.RaiseCanExecuteChanged();
@@ -67,6 +72,9 @@ namespace AudioFil
         public RelayCommand UpdateCommand { get; set; }
         public RelayCommand DeleteCommand { get; set; }
 
+        private RadioListener listener;
+        private RadioListener oldListener;
+
         public RadioViewModel()
         {
             Radios = xml.LoadRadios(Radios);
@@ -81,8 +89,8 @@ namespace AudioFil
 
             wmp.StatusChange += CheckStatus;
 
-            listener.OnKeyPressed += OnKeyPressed;
-            listener.HookKeyboard();
+            keyListener.OnKeyPressed += OnKeyPressed;
+            keyListener.HookKeyboard();
         }
 
         public void Play()
@@ -96,13 +104,13 @@ namespace AudioFil
             }
 
             wmp.controls.stop();
-            if (oldRadio != null)
-                oldRadio.Stop();
+            if (oldListener != null)
+                oldListener.Stop();
 
-            wmp.URL = SelectedRadio.Url;
+            wmp.URL = SelectedRadio.Url.ToString();
             wmp.controls.play();
 
-            SelectedRadio.Start();
+            listener.Start();
             SelectedRadio.OnCurrentSongChanged += (ss, ee) =>
             {
                 Title = ee.NewSong.Artist + " - " + ee.NewSong.Title;
@@ -111,7 +119,7 @@ namespace AudioFil
                 {
                     PopupNotifier popup = new PopupNotifier
                     {
-                        TitleText = SelectedRadio.NazwaStacja,
+                        TitleText = SelectedRadio.Name,
                         ContentText = Title
                     };
                     popup.Popup();
@@ -123,7 +131,7 @@ namespace AudioFil
         {
             wmp.controls.stop();
 
-            SelectedRadio.Stop();
+            listener.Stop();
             Title = "";
         }
 
@@ -158,7 +166,7 @@ namespace AudioFil
             {
                 AddStationViewModel avm = new AddStationViewModel();
                 avm.SetMode(true, SelectedRadio);
-                avm.StationName = SelectedRadio.NazwaStacja;
+                avm.StationName = SelectedRadio.Name;
                 avm.StationUrl = SelectedRadio.Url;
                 av.DataContext = avm;
             }
@@ -178,7 +186,7 @@ namespace AudioFil
 
         private void Delete()
         {
-            MessageBoxResult result = MessageBox.Show($"Czy na pewno chcesz usunąć {SelectedRadio.NazwaStacja}?", "Usuń", MessageBoxButton.YesNo);
+            MessageBoxResult result = MessageBox.Show($"Czy na pewno chcesz usunąć {SelectedRadio.Name}?", "Usuń", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
                 xml.DeleteRadio(SelectedRadio);

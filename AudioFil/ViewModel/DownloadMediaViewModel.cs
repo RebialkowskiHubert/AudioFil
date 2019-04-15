@@ -1,14 +1,9 @@
 ﻿using System.ComponentModel;
-using System.IO;
-using System;
-using System.Windows;
-using System.Linq;
 
 namespace AudioFil
 {
     public class DownloadMediaViewModel : BindableBase
     {
-        private XMLHandling xMLHandling;
         private BackgroundWorker worker;
 
         private string urlDown;
