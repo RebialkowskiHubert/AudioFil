@@ -23,6 +23,9 @@ namespace AudioFil
             {
                 if (selectedRadio != value)
                 {
+                    if(selectedRadio != null)
+                        selectedRadio.OnCurrentSongChanged -= OnSongChange;
+
                     selectedRadio = value;
                     OnPropertyChanged("SelectedRadio");
                     Play();
@@ -118,20 +121,7 @@ namespace AudioFil
             wmp.URL = SelectedRadio.Url.ToString();
             wmp.controls.play();
 
-            SelectedRadio.OnCurrentSongChanged += (ss, ee) =>
-            {
-                Title = ee.NewSong.Artist + " - " + ee.NewSong.Title;
-
-                App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    PopupNotifier popup = new PopupNotifier
-                    {
-                        TitleText = SelectedRadio.Name,
-                        ContentText = Title
-                    };
-                    popup.Popup();
-                });
-            };
+            SelectedRadio.OnCurrentSongChanged += OnSongChange;
         }
 
         private void Stop()
@@ -139,8 +129,6 @@ namespace AudioFil
             wmp.controls.stop();
 
             Title = "";
-
-            SelectedRadio.Running = false;
         }
 
         private void Next()
@@ -228,6 +216,21 @@ namespace AudioFil
         private void CheckStatus()
         {
             Description = wmp.status;
+        }
+
+        private void OnSongChange(object sender, CurrentSongEventArgs e)
+        {
+            Title = e.NewSong.Artist + " - " + e.NewSong.Title;
+
+            App.Current.Dispatcher.InvokeAsync(() =>
+            {
+                PopupNotifier popup = new PopupNotifier
+                {
+                    TitleText = SelectedRadio.Name,
+                    ContentText = Title
+                };
+                popup.Popup();
+            });
         }
     }
 }
