@@ -1,4 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Configuration;
+using System.Windows;
+using YoutubeExplode;
+using YoutubeExplode.Models.MediaStreams;
 
 namespace AudioFil
 {
@@ -41,78 +46,41 @@ namespace AudioFil
             worker.RunWorkerCompleted += OnComplete;
             worker.WorkerReportsProgress = true;
             worker.DoWork += StartDownload;
-            worker.ProgressChanged += new ProgressChangedEventHandler(ProgressChanged);
             worker.RunWorkerAsync();
             StrProgress = "0%";
         }
 
-        private void StartDownload(object o, DoWorkEventArgs e)
+        private async void StartDownload(object o, DoWorkEventArgs e)
         {
-            /*try
+            try
             {
-                YouTube yt = YouTube.Default;
-                YouTubeVideo video = yt.GetVideo(UrlDown);
-                IEnumerable<VideoInfo> videoInfo = DownloadUrlResolver.GetDownloadUrls(UrlDown);
+                string path = ConfigurationManager.AppSettings["MusicPath"];
 
-                VideoInfo video = videoInfo.First(i => i.VideoType == VideoType.Mp4 && i.Resolution == 360);
-
-                worker.ReportProgress(25);
-
-                if (video.RequiresDecryption)
-                    DownloadUrlResolver.DecryptDownloadUrl(video);
-
-                char[] illegal = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
-
-                string audioPath = video.Title;
-
-                foreach(char character in illegal)
+                if (string.IsNullOrEmpty(path))
                 {
-                    if (audioPath.Contains(character))
-                        audioPath = audioPath.Replace(character, ' ');
+                    MessageBox.Show("Wpisz ścieżkę folderu z muzyką", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
 
-                if (Properties.Settings.Default.MusicPath != "")
-                    audioPath = Properties.Settings.Default.MusicPath + "\\" + audioPath;
-                else
-                    audioPath = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic) + "\\" + audioPath;
+                var client = new YoutubeClient();
 
-                 VideoDownloader downloader = new VideoDownloader(video, audioPath);
-                 downloader.Execute();
+                var info = await client.GetVideoAsync(YoutubeClient.ParseVideoId(UrlDown));
 
-                File.WriteAllBytes(audioPath, video.GetBytes());
+                path += info.Title + " - " + info.Author + ".mp3";
 
-                worker.ReportProgress(50);
+                var video = await client.GetVideoMediaStreamInfosAsync(YoutubeClient.ParseVideoId(UrlDown));
 
-                MediaFile input = new MediaFile { Filename = audioPath };
-                MediaFile output = new MediaFile { Filename = $"{audioPath}.mp3" };
+                var streamInfo = video.Audio.WithHighestBitrate();
+               
+                await client.DownloadMediaStreamAsync(streamInfo, path);
 
-                using (Engine engine = new Engine())
-                {
-                    engine.GetMetadata(input);
-                    engine.Convert(input, output);
-                    worker.ReportProgress(90);
-                }
-
-                File.Delete(input.Filename);
-
-                worker.ReportProgress(99);
-
-                xMLHandling = new XMLHandling();
-
-                xMLHandling.AddSong(output.Filename);
-
-                worker.ReportProgress(100);
+                XMLHandling xml = new XMLHandling();
+                xml.AddSong(path);
             }
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }*/
-        }
-
-        private void ProgressChanged(object o, ProgressChangedEventArgs e)
-        {
-            Progress = e.ProgressPercentage;
-            StrProgress = Progress.ToString() + "%";
+            }
         }
 
         private void OnComplete(object o, RunWorkerCompletedEventArgs e)
