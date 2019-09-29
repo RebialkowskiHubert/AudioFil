@@ -141,10 +141,10 @@ namespace AudioFil
         {
             XDocument xdoc = XDocument.Load(pathSongs);
 
-            xdoc.Root.Element("body").Element("seq").Add
-                (
-                    new XElement("media", new XAttribute("src", songPath))
-                );
+            xdoc.Root.Element("body").Element("seq").AddFirst
+            (
+                new XElement("media", new XAttribute("src", songPath))
+            );
 
             xdoc.Save(pathSongs);
         }

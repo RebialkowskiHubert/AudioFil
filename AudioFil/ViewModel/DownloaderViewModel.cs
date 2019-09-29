@@ -25,10 +25,10 @@ namespace AudioFil
         public DownloaderViewModel()
         {
             DownloadedMedia = new ObservableCollection<Control>();
-            DownloadCommand = new RelayCommand(Download);
+            DownloadCommand = new RelayCommand(DownloadAsync);
         }
 
-        private void Download()
+        private async void DownloadAsync()
         {
             DownloadMediaViewModel dmvm = new DownloadMediaViewModel
             {
@@ -38,7 +38,7 @@ namespace AudioFil
             {
                 DataContext = dmvm
             });
-            dmvm.RunDownload();
+            await dmvm.StartDownloadAsync();
         }
     }
 }

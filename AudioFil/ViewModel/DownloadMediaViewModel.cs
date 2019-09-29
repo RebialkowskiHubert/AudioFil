@@ -1,16 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Windows;
 using YoutubeExplode;
+using YoutubeExplode.Models;
 using YoutubeExplode.Models.MediaStreams;
 
 namespace AudioFil
 {
     public class DownloadMediaViewModel : BindableBase
-    {
-        private BackgroundWorker worker;
-
+    { 
         private string urlDown;
         public string UrlDown
         {
@@ -30,30 +30,22 @@ namespace AudioFil
         public int Progress
         {
             get => progress;
-            set => SetProperty(ref progress, value, "Progress");
+            private set => SetProperty(ref progress, value, "Progress");
         }
 
         private string strProgress;
         public string StrProgress
         {
             get => strProgress;
-            set => SetProperty(ref strProgress, value, "StrProgress");
+            private set => SetProperty(ref strProgress, value, "StrProgress");
         }
 
-        public void RunDownload()
-        {
-            worker = new BackgroundWorker();
-            worker.RunWorkerCompleted += OnComplete;
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += StartDownload;
-            worker.RunWorkerAsync();
-            StrProgress = "0%";
-        }
-
-        private async void StartDownload(object o, DoWorkEventArgs e)
+        public async Task StartDownloadAsync()
         {
             try
             {
+                SetProgress(0);
+
                 string path = ConfigurationManager.AppSettings["MusicPath"];
 
                 if (string.IsNullOrEmpty(path))
@@ -64,18 +56,24 @@ namespace AudioFil
 
                 var client = new YoutubeClient();
 
-                var info = await client.GetVideoAsync(YoutubeClient.ParseVideoId(UrlDown));
+                Video info = await client.GetVideoAsync(YoutubeClient.ParseVideoId(UrlDown));
 
                 path += info.Title + " - " + info.Author + ".mp3";
 
-                var video = await client.GetVideoMediaStreamInfosAsync(YoutubeClient.ParseVideoId(UrlDown));
+                SetProgress(30);
 
-                var streamInfo = video.Audio.WithHighestBitrate();
+                MediaStreamInfoSet video = await client.GetVideoMediaStreamInfosAsync(YoutubeClient.ParseVideoId(UrlDown));
+
+                AudioStreamInfo streamInfo = video.Audio.WithHighestBitrate();
                
                 await client.DownloadMediaStreamAsync(streamInfo, path);
 
+                SetProgress(90);
+
                 XMLHandling xml = new XMLHandling();
                 xml.AddSong(path);
+
+                SetProgress(100);
             }
             catch(Exception ex)
             {
@@ -83,10 +81,15 @@ namespace AudioFil
             }
         }
 
-        private void OnComplete(object o, RunWorkerCompletedEventArgs e)
+        private void SetProgress(int progress)
         {
-            Progress = 100;
-            StrProgress = "Gotowy";
+            Progress = progress;
+            StrProgress = progress.ToString() + "%";
+
+            if(progress == 100)
+            {
+                StrProgress = "Gotowy";
+            }
         }
     }
 }
