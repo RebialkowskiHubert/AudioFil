@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Configuration;
 using System.Threading.Tasks;
 using System.Windows;
@@ -56,16 +55,18 @@ namespace AudioFil
 
                 var client = new YoutubeClient();
 
-                Video info = await client.GetVideoAsync(YoutubeClient.ParseVideoId(UrlDown));
+                string videoId = YoutubeClient.ParseVideoId(UrlDown);
+
+                Video info = await client.GetVideoAsync(videoId);
 
                 path += info.Title + " - " + info.Author + ".mp3";
 
                 SetProgress(30);
 
-                MediaStreamInfoSet video = await client.GetVideoMediaStreamInfosAsync(YoutubeClient.ParseVideoId(UrlDown));
+                MediaStreamInfoSet video = await client.GetVideoMediaStreamInfosAsync(videoId);
 
                 AudioStreamInfo streamInfo = video.Audio.WithHighestBitrate();
-               
+
                 await client.DownloadMediaStreamAsync(streamInfo, path);
 
                 SetProgress(90);
