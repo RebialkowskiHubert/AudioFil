@@ -59,7 +59,7 @@ namespace AudioFil
 
                 Video info = await client.GetVideoAsync(videoId);
 
-                path += info.Title + " - " + info.Author + ".mp3";
+                path += info.Title + ".mp3";
 
                 SetProgress(30);
 

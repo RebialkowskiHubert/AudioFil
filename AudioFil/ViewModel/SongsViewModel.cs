@@ -82,7 +82,7 @@ namespace AudioFil
 
         public SongsViewModel()
         {
-            LoadSongs();
+            //LoadSongs();
 
             PlayCommand = new RelayCommand(Play);
             PauseCommand = new RelayCommand(Pause);
