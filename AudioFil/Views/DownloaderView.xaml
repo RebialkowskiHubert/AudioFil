@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Text="Wprowadź url:" Style="{StaticResource Etykieta}" Margin="10"/>
-        
+
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBox Width="280" Margin="10" Text="{Binding Url}"/>
             <Button Content="OK" Margin="10" Width="40" Height="25" IsDefault="True" Command="{Binding DownloadCommand}"/>
@@ -23,10 +23,38 @@
         <ListView Grid.Row="2"
                   Name="DownloadedList"
                   Margin="10"
-                  ItemsSource="{Binding DownloadedMedia}">
+                  ItemsSource="{Binding SongsList}"
+                  SelectedItem="{Binding SelectedSong}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Pobrane" Width="338"/>
+                    <GridViewColumn Header="Pobrane" Width="338">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="{Binding Name}" Grid.Row="0" Margin="3" Width="300" Style="{StaticResource Etykieta}"/>
+                                    
+                                    <TextBlock Text="{Binding Url}" Grid.Row="1" Margin="3" Width="300"/>
+
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                        <ProgressBar Width="279"
+                                                    Height="15"
+                                                    Minimum="0" 
+                                                    Maximum="100" 
+                                                    Margin="3"
+                                                    Value="{Binding Progress, Mode=OneWay}"/>
+
+                                        <TextBlock Text="{Binding StrProgress}" Width="50"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

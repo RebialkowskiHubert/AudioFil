@@ -157,7 +157,7 @@
     <Compile Include="Model\Song.cs" />
     <Compile Include="ViewModel\AddStationViewModel.cs" />
     <Compile Include="ViewModel\DownloaderViewModel.cs" />
-    <Compile Include="ViewModel\DownloadMediaViewModel.cs" />
+    <Compile Include="ViewModel\DownloadHandler.cs" />
     <Compile Include="ViewModel\RadioViewModel.cs" />
     <Compile Include="ViewModel\XMLHandling.cs" />
     <Compile Include="Views\AddStationView.xaml.cs">
@@ -168,9 +168,6 @@
     <Compile Include="Model\Radio.cs" />
     <Compile Include="Views\DownloaderView.xaml.cs">
       <DependentUpon>DownloaderView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\DownloadMediaView.xaml.cs">
-      <DependentUpon>DownloadMediaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlayerView.xaml.cs">
       <DependentUpon>PlayerView.xaml</DependentUpon>
@@ -202,10 +199,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\DownloaderView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DownloadMediaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

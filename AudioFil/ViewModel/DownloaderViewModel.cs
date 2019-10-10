@@ -9,14 +9,21 @@ namespace AudioFil
         public string Url
         {
             get => url;
-            set => SetProperty(ref url, value, "Url");
+            set => SetProperty(ref url, value, nameof(Url));
         }
 
-        private ObservableCollection<Control> downloadedMedia;
-        public ObservableCollection<Control> DownloadedMedia
+        private ObservableCollection<DownloadMedia> songsList;
+        public ObservableCollection<DownloadMedia> SongsList
         {
-            get => downloadedMedia;
-            set => SetProperty(ref downloadedMedia, value, "DownloadedMedia");
+            get => songsList;
+            set => SetProperty(ref songsList, value, nameof(SongsList));
+        }
+
+        private DownloadMedia selectedSong;
+        public DownloadMedia SelectedSong
+        {
+            get => selectedSong;
+            set => SetProperty(ref selectedSong, value, nameof(SelectedSong));
         }
 
 
@@ -24,21 +31,27 @@ namespace AudioFil
 
         public DownloaderViewModel()
         {
-            DownloadedMedia = new ObservableCollection<Control>();
+            SongsList = new ObservableCollection<DownloadMedia>();
             DownloadCommand = new RelayCommand(DownloadAsync);
         }
 
         private async void DownloadAsync()
         {
-            DownloadMediaViewModel dmvm = new DownloadMediaViewModel
+            SelectedSong = new DownloadMedia()
             {
-                UrlDown = Url
+                Url = this.Url,
+                Progress = 0,
+                StrProgress = "0%"
             };
-            DownloadedMedia.Add(new DownloadMediaView
+
+            SongsList.Add(SelectedSong);
+
+            DownloadHandler handler = new DownloadHandler
             {
-                DataContext = dmvm
-            });
-            await dmvm.StartDownloadAsync();
+                Song = SelectedSong
+            };
+
+            await handler.StartDownloadAsync();
         }
     }
 }
