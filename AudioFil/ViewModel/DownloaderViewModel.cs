@@ -44,14 +44,17 @@ namespace AudioFil
                 StrProgress = "0%"
             };
 
-            SongsList.Add(SelectedSong);
-
-            DownloadHandler handler = new DownloadHandler
+            DownloadHandler handler = new DownloadHandler(this)
             {
                 Song = SelectedSong
             };
 
             await handler.StartDownloadAsync();
+        }
+
+        public void AddToSongsList(DownloadMedia media)
+        {
+            SongsList.Add(media);
         }
     }
 }
